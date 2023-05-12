@@ -1,6 +1,12 @@
 import React from 'react'
 import './index.css'
 
+import P1 from '../../assets/p1.jpeg'
+import P2 from '../../assets/p2.jpeg'
+import P3 from '../../assets/p3.jpeg'
+import P4 from '../../assets/p4.jpeg'
+import { useNavigate } from 'react-router-dom'
+
 interface Product {
   name: string
   image: string
@@ -13,10 +19,10 @@ interface User {
 }
 
 const products: Product[] = [
-  { name: 'Produto 1', image: 'https://via.placeholder.com/150', price: 10.99 },
-  { name: 'Produto 2', image: 'https://via.placeholder.com/150', price: 20.99 },
-  { name: 'Produto 3', image: 'https://via.placeholder.com/150', price: 30.99 },
-  { name: 'Produto 4', image: 'https://via.placeholder.com/150', price: 40.99 },
+  { name: 'Produto 1', image: P1, price: 10.99 },
+  { name: 'Produto 2', image: P2, price: 20.99 },
+  { name: 'Produto 3', image: P3, price: 30.99 },
+  { name: 'Produto 4', image: P4, price: 40.99 },
 ]
 
 const users: User[] = [
@@ -27,16 +33,15 @@ const users: User[] = [
 ]
 
 const Admin: React.FC = () => {
+  const navigate = useNavigate()
   return (
     <div className="admin-page">
       <div className="menu">
+        <h3>🛍️ E-commerce</h3>
         <ul>
-          <li>
-            <a href="#">Produtos</a>
-          </li>
-          <li>
-            <a href="#">Usuários</a>
-          </li>
+          <li onClick={() => navigate('/')}>Início</li>
+          <li onClick={() => alert('Página de Conta de Usuário')}>Sua conta</li>
+          <li onClick={() => navigate('/login')}>Sair</li>
         </ul>
       </div>
       <div className="content">

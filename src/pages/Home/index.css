@@ -25,6 +25,7 @@
 .main-list {
   flex: 3;
   padding: 20px;
+  background-color: #1f9d85;
 }
 
 .main-list h1 {
@@ -43,6 +44,7 @@
   margin: 10px;
   flex: 1 0 300px;
   text-align: center;
+  background-color: white;
 }
 
 .product img {
@@ -62,7 +64,7 @@
 }
 
 .product button {
-  background-color: #f5a623;
+  background-color: #f67e5e;
   color: #fff;
   border: none;
   padding: 5px 10px;
@@ -71,13 +73,14 @@
 }
 
 .product button:hover {
-  background-color: #f49b00;
+  background-color: #f67e5e;
 }
 
 .cart-container {
   background-color: #f5f5f5;
   padding: 20px;
   flex: 1;
+  border: 1px solid #ccc;
 }
 
 .cart-container h2 {
@@ -100,7 +103,7 @@
 }
 
 .cart-container button {
-  background-color: #f5a623;
+  background-color: #f67e5e;
   color: #fff;
   border: none;
   padding: 5px 10px;
@@ -109,13 +112,14 @@
 }
 
 .cart-container button:hover {
-  background-color: #f49b00;
+  background-color: #f67e5e;
 }
 
 .past-orders-container {
   background-color: #f5f5f5;
   padding: 20px;
   flex: 1;
+  border: 1px solid #ccc;
 }
 
 .past-orders-container h2 {
@@ -133,7 +137,7 @@
 }
 
 .past-orders-container a {
-  color: #f5a623;
+  color: #f67e5e;
   text-decoration: none;
 }
 

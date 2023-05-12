@@ -1,7 +1,10 @@
 import React from 'react'
 import './index.css'
+import { useNavigate } from 'react-router-dom'
 
 const Register: React.FC = () => {
+  const navigate = useNavigate()
+
   return (
     <div className="register-screen">
       <div className="register-form">
@@ -18,7 +21,16 @@ const Register: React.FC = () => {
           />
         </div>
 
-        <button className="register-button">Finalizar cadastro</button>
+        <div className="button-container">
+          <button
+            className="register-button"
+            onClick={() => navigate('/login')}
+          >
+            Finalizar cadastro
+          </button>
+          <a href="/login">Ir para tela de login</a>
+          <a href="/">Voltar para tela inicial</a>
+        </div>
       </div>
     </div>
   )

@@ -1,8 +1,33 @@
-import React from 'react'
+import React, { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../services/api'
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const navigate = useNavigate()
+
+  const handleEmailChange = (email: string) => {
+    setEmail(email)
+  }
+
+  const handlePasswordChange = (password: string) => {
+    setPassword(password)
+  }
+
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      const response = await api.post('login', { email, password })
+
+      localStorage.setItem('userId', response.data)
+      localStorage.setItem('userName', response.data.name)
+
+      navigate('/')
+    } catch (err) {
+      alert('Falha no login. Tente novamente, por favor.')
+    }
+  }
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
@@ -17,17 +42,19 @@ const Login: React.FC = () => {
                 type="email"
                 placeholder="E-mail"
                 className="p-2 border-2 border-gray-300 rounded-md mb-2"
+                onChange={ev => handleEmailChange(ev.target.value)}
               />
               <input
                 type="password"
                 placeholder="Senha"
                 className="p-2 border-2 border-gray-300 rounded-md"
+                onChange={ev => handlePasswordChange(ev.target.value)}
               />
             </div>
             <div className="flex flex-col w-full mt-3">
               <button
                 className="p-2 bg-red-500 text-white rounded-md mb-5 hover:bg-red-800"
-                onClick={() => navigate('/')}
+                onClick={() => handleLogin}
               >
                 Login
               </button>

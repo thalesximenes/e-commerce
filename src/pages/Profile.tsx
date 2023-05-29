@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { User } from './Register'
 import api from '../services/api'
 
-const User: React.FC = () => {
+const Profile: React.FC = () => {
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState<User>()
 
@@ -94,4 +94,4 @@ const User: React.FC = () => {
   )
 }
 
-export default User
+export default Profile

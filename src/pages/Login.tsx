@@ -6,7 +6,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
-      <div className="flex flex-col h-1/3  w-1/4 justify-center items-center bg-white rounded-lg">
+      <div className="flex flex-col min-h-fit w-1/4 justify-center items-center bg-white rounded-lg">
         <div className="flex flex-col h-full justify-center items-center">
           <div className="flex flex-col items-center h-full p-8">
             <div className="flex flex-col mt-4 mb-6">
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
             </div>
             <div className="flex flex-col w-full mt-3">
               <button
-                className="p-2 bg-red-500 text-white rounded-md mb-5"
+                className="p-2 bg-red-500 text-white rounded-md mb-5 hover:bg-red-800"
                 onClick={() => navigate('/')}
               >
                 Login

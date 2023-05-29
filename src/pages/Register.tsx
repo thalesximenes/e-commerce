@@ -6,18 +6,13 @@ const Register: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
-      <div className="flex flex-col h-1/3  w-1/4 justify-center items-center bg-white rounded-lg">
+      <div className="flex flex-col min-h-fit w-1/4 justify-center items-center bg-white rounded-lg">
         <div className="flex flex-col h-full justify-center items-center">
           <div className="flex flex-col items-center h-full p-8">
             <div className="flex flex-col mb-2">
               <h1 className="text-3xl text-gray-500"> Cadastro </h1>
             </div>
             <div className="flex flex-col mt-4 mb-3">
-              <input
-                type="text"
-                placeholder="Nome"
-                className="p-2 border-2 border-gray-300 rounded-md mb-2"
-              />
               <input
                 type="email"
                 placeholder="E-mail"
@@ -28,10 +23,20 @@ const Register: React.FC = () => {
                 placeholder="Senha"
                 className="p-2 border-2 border-gray-300 rounded-md mb-2"
               />
+              <input
+                type="text"
+                placeholder="Nome"
+                className="p-2 border-2 border-gray-300 rounded-md mb-2"
+              />
+              <input
+                type="text"
+                placeholder="Endereço"
+                className="p-2 border-2 border-gray-300 rounded-md mb-2"
+              />
             </div>
             <div className="flex flex-col w-full ">
               <button
-                className="p-2 bg-red-500 text-white rounded-md mb-4"
+                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800"
                 onClick={() => navigate('/login')}
               >
                 Finalizar cadastro

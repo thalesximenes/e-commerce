@@ -1,5 +1,4 @@
 import React from 'react'
-import './index.css'
 import { useNavigate } from 'react-router-dom'
 
 const Login: React.FC = () => {
@@ -7,13 +6,13 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
-      <div className="flex flex-col h-1/2 justify-center items-center bg-white rounded-lg">
-        <div className="flex flex-col  h-3/4 justify-center items-center bg-blue-400">
-          <div className="flex flex-col items-center h-1/2 bg-orange-500">
-            <div className="flex flex-col">
+      <div className="flex flex-col h-1/3  w-1/4 justify-center items-center bg-white rounded-lg">
+        <div className="flex flex-col h-full justify-center items-center">
+          <div className="flex flex-col items-center h-full p-8">
+            <div className="flex flex-col mt-4 mb-6">
               <h1 className="text-3xl text-gray-500">🛍️ E-commerce</h1>
             </div>
-            <div className="flex flex-col w-3/4 mb-4 bg-red-400">
+            <div className="flex flex-col mt-8">
               <input
                 type="email"
                 placeholder="E-mail"
@@ -25,14 +24,14 @@ const Login: React.FC = () => {
                 className="p-2 border-2 border-gray-300 rounded-md"
               />
             </div>
-            <div className="w-2/4">
+            <div className="flex flex-col w-full mt-3">
               <button
-                className="login-button  p-2 bg-red-500 text-white rounded-md"
+                className="p-2 bg-red-500 text-white rounded-md mb-5"
                 onClick={() => navigate('/')}
               >
                 Login
               </button>
-              <div className="">
+              <div className="flex flex-col w-full ">
                 <a href="/register" className="">
                   Ainda não possui conta?
                 </a>

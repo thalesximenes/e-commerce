@@ -1,11 +1,13 @@
-import React, { FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import api from '../services/api'
+import React, { useState } from 'react'
+import { useAuthContext } from '../contexts/auth'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+
+  const [, { dispatchLogin }] = useAuthContext()
 
   const handleEmailChange = (email: string) => {
     setEmail(email)
@@ -15,19 +17,7 @@ const Login: React.FC = () => {
     setPassword(password)
   }
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    try {
-      const response = await api.post('login', { email, password })
-
-      localStorage.setItem('userId', response.data)
-      localStorage.setItem('userName', response.data.name)
-
-      navigate('/')
-    } catch (err) {
-      alert('Falha no login. Tente novamente, por favor.')
-    }
-  }
+  const handleLogin = async () => await dispatchLogin({ email, password })
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
@@ -54,7 +44,7 @@ const Login: React.FC = () => {
             <div className="flex flex-col w-full mt-3">
               <button
                 className="p-2 bg-red-500 text-white rounded-md mb-5 hover:bg-red-800"
-                onClick={() => handleLogin}
+                onClick={handleLogin}
               >
                 Login
               </button>
@@ -66,6 +56,7 @@ const Login: React.FC = () => {
                   Voltar para tela inicial
                 </a>
               </div>
+              <ToastContainer />
             </div>
           </div>
         </div>

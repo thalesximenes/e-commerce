@@ -1,6 +1,8 @@
-import React, { FormEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../services/api'
+import { registerService } from '../services/api'
+import { isObjectComplete } from '../utils'
+import { ToastContainer, toast } from 'react-toastify'
 
 export type User = {
   email?: string
@@ -9,9 +11,16 @@ export type User = {
   address?: string
 }
 
+const initialNewUser = {
+  email: '',
+  password: '',
+  name: '',
+  address: '',
+}
+
 const Register: React.FC = () => {
   const navigate = useNavigate()
-  const [newUser, setNewUser] = useState<User>()
+  const [newUser, setNewUser] = useState<User>(initialNewUser)
 
   const handleEmailChange = (email: User['email']) => {
     setNewUser({ ...newUser, email: email })
@@ -29,17 +38,18 @@ const Register: React.FC = () => {
     setNewUser({ ...newUser, address: address })
   }
 
-  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleRegister = async () => {
     try {
-      const response = await api.post('register', { newUser })
-      console.log(response)
-
+      await registerService({ ...newUser })
       navigate('/login')
     } catch (err) {
-      alert('Falha no cadastro. Tente novamente, por favor.')
+      toast(
+        'É necessária uma senha com 8 caracteres, com pelo menos 1 letra e 1 número'
+      )
     }
   }
+
+  const isNewUserComplete = isObjectComplete(newUser)
 
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
@@ -81,8 +91,9 @@ const Register: React.FC = () => {
             </div>
             <div className="flex flex-col w-full ">
               <button
-                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800"
-                onClick={() => handleRegister}
+                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800 disabled:bg-slate-500"
+                onClick={handleRegister}
+                disabled={!isNewUserComplete}
               >
                 Finalizar cadastro
               </button>
@@ -91,6 +102,7 @@ const Register: React.FC = () => {
                 <a href="/">Voltar para tela inicial</a>
               </div>
             </div>
+            <ToastContainer />
           </div>
         </div>
       </div>

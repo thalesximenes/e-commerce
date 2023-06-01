@@ -4,9 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import P1 from '../../assets/p1.jpeg'
 import P2 from '../../assets/p3.jpeg'
 import P3 from '../../assets/p4.jpeg'
+import { useAuthContext } from '../../contexts/auth'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
+  const [, { dispatchLogout }] = useAuthContext()
+
+  const handleLogout = async () => {
+    await dispatchLogout()
+  }
+
   return (
     <div className="home-container">
       <div className="menu-container">
@@ -15,7 +22,7 @@ const Home: React.FC = () => {
           <li>Início</li>
           <li onClick={() => navigate('/user')}>Sua conta</li>
           <li onClick={() => navigate('/adm')}>Administrador</li>
-          <li onClick={() => navigate('/login')}>Sair</li>
+          <li onClick={handleLogout}>Sair</li>
         </ul>
       </div>
       <div className="main-list">

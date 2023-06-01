@@ -32,7 +32,7 @@ export const loginService = (payload: ISignIn): Promise<LoginResponse> => {
   return api.post<IUserLoggedIn>('login', payload).then((res: Temp) => res.data)
 }
 
-export const signOutService = (refreshToken?: string, accessToken?: string) => {
+export const signOutService = (refreshToken: string, accessToken: string) => {
   const config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -44,8 +44,10 @@ export const signOutService = (refreshToken?: string, accessToken?: string) => {
     .then((res: Temp) => res.data)
 }
 
-export const updateUserService = () => {
-  return api.patch('user', {}).then((res: Temp) => res.data)
+type UserUpdate = Omit<User, 'id' | 'role'>
+
+export const updateUserService = (payload: UserUpdate) => {
+  return api.patch('user', payload).then((res: Temp) => res.data)
 }
 
 export const deleteUserService = () => {

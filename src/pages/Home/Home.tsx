@@ -20,7 +20,7 @@ const Home: React.FC = () => {
         <h3>🛍️ E-commerce</h3>
         <ul>
           <li>Início</li>
-          <li onClick={() => navigate('/user')}>Sua conta</li>
+          <li onClick={() => navigate('/profile')}>Sua conta</li>
           <li onClick={() => navigate('/adm')}>Administrador</li>
           <li onClick={handleLogout}>Sair</li>
         </ul>

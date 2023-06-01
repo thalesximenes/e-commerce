@@ -6,6 +6,7 @@ import P2 from '../../assets/p2.jpeg'
 import P3 from '../../assets/p3.jpeg'
 import P4 from '../../assets/p4.jpeg'
 import { useNavigate } from 'react-router-dom'
+import { useAuthContext } from '../../contexts/auth'
 
 interface Product {
   name: string
@@ -34,14 +35,20 @@ const users: User[] = [
 
 const Admin: React.FC = () => {
   const navigate = useNavigate()
+  const [, { dispatchLogout }] = useAuthContext()
+
+  const handleLogout = async () => {
+    await dispatchLogout()
+  }
+
   return (
     <div className="admin-page">
       <div className="menu">
         <h3>🛍️ E-commerce</h3>
         <ul>
           <li onClick={() => navigate('/')}>Início</li>
-          <li onClick={() => alert('Página de Conta de Usuário')}>Sua conta</li>
-          <li onClick={() => navigate('/login')}>Sair</li>
+          <li onClick={() => navigate('/profile')}>Sua conta</li>
+          <li onClick={handleLogout}>Sair</li>
         </ul>
       </div>
       <div className="content">

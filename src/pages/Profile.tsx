@@ -1,18 +1,25 @@
-import React, { FormEvent, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User } from './Register'
-import api from '../services/api'
+import { User, initialNewUser } from './Register'
+import { updateUserService } from '../services/api'
+import { useAuthContext } from '../contexts/auth'
+import { ToastContainer, toast } from 'react-toastify'
 
 const Profile: React.FC = () => {
   const navigate = useNavigate()
-  const [currentUser, setCurrentUser] = useState<User>()
+  const [currentUser, setCurrentUser] = useState<User>(initialNewUser)
+  const [state] = useAuthContext()
+  const useEdited = state.user
+  useEffect(() => {
+    setCurrentUser({
+      email: useEdited?.email ?? '',
+      name: useEdited?.name,
+      address: useEdited?.address,
+    })
+  }, [useEdited])
 
   const handleEmailChange = (email: User['email']) => {
     setCurrentUser({ ...currentUser, email: email })
-  }
-
-  const handlePasswordChange = (password: User['password']) => {
-    setCurrentUser({ ...currentUser, password: password })
   }
 
   const handleNameChange = (name: User['name']) => {
@@ -23,15 +30,13 @@ const Profile: React.FC = () => {
     setCurrentUser({ ...currentUser, address: address })
   }
 
-  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleUpdate = async () => {
     try {
-      const response = await api.post('update', { currentUser })
+      const response = await updateUserService(currentUser)
       console.log(response)
-
       navigate('/')
     } catch (err) {
-      alert('Falha no cadastro. Tente novamente, por favor.')
+      toast('Falha na atualização. Tente novamente, por favor.')
     }
   }
 
@@ -53,13 +58,6 @@ const Profile: React.FC = () => {
                 value={currentUser?.email}
                 className="p-2 border-2 border-gray-300 rounded-md mb-2"
                 onChange={ev => handleEmailChange(ev.target.value)}
-              />
-              <input
-                type="password"
-                placeholder="Senha"
-                value={currentUser?.password}
-                className="p-2 border-2 border-gray-300 rounded-md mb-2"
-                onChange={ev => handlePasswordChange(ev.target.value)}
               />
               <input
                 type="text"
@@ -88,6 +86,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
+          <ToastContainer />
         </div>
       </div>
     </div>

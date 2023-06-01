@@ -20,16 +20,18 @@ const initialState: AuthState = {
   isSessionExpired: false,
 }
 
+const initialTokens = {
+  accessToken: '',
+  refreshToken: '',
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({
   children,
 }: AuthProviderProps) => {
   const [state, setState] = useState<AuthState>(() => ({} as AuthState))
   const [loading, setLoading] = useState(false)
-  const [refreshToken, setRefreshToken] = useState<string>()
+  const [tokens, setTokens] = useState(initialTokens)
   const navigate = useNavigate()
-  const accessToken = localStorage.getItem('ecommerce:token')
-
-  console.log('STATE', state)
 
   useEffect(() => {
     const user = persistUser().get()
@@ -42,7 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const processLogout = () => {
     setState(initialState)
-    setRefreshToken('')
+    setTokens(initialTokens)
   }
 
   const dispatchLogin = useCallback(
@@ -56,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         })
         persistUser().set(user)
         persistToken().set(accessToken)
-        setRefreshToken(refreshToken)
+        setTokens({ accessToken, refreshToken })
 
         setTimeout(() => {
           processLogin(user)
@@ -77,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const dispatchLogout = useCallback(async () => {
     try {
-      await signOutService(refreshToken, accessToken)
+      await signOutService(tokens.refreshToken, tokens.accessToken)
       persistUser().destroy()
       persistToken().destroy()
     } catch {
@@ -86,7 +88,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       processLogout()
       navigate('/login')
     }
-  }, [navigate])
+  }, [navigate, tokens.accessToken, tokens.refreshToken])
 
   return (
     <AuthContext.Provider

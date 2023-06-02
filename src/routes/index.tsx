@@ -5,6 +5,7 @@ import Login from '../pages/Login'
 import Admin from '../pages/Admin/Admin'
 import Profile from '../pages/Profile'
 import { AuthProvider } from '../contexts/auth'
+import PrivateRoute from './private.routes'
 
 export const Router = () => {
   return (
@@ -14,8 +15,22 @@ export const Router = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
-          <Route path="/adm" element={<Admin />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/adm"
+            element={
+              <PrivateRoute>
+                <Admin />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

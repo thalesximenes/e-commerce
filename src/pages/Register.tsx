@@ -11,7 +11,7 @@ export type User = {
   address?: string
 }
 
-export const initialNewUser = {
+const initialNewUser = {
   email: '',
   password: '',
   name: '',

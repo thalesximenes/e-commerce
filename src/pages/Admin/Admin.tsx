@@ -35,7 +35,9 @@ const users: User[] = [
 
 const Admin: React.FC = () => {
   const navigate = useNavigate()
-  const [, { dispatchLogout }] = useAuthContext()
+  const [state, { dispatchLogout }] = useAuthContext()
+  const loggedUrer = state.user
+  const isUserLogged = !!loggedUrer
 
   const handleLogout = async () => {
     await dispatchLogout()
@@ -44,11 +46,14 @@ const Admin: React.FC = () => {
   return (
     <div className="admin-page">
       <div className="menu">
-        <h3>🛍️ E-commerce</h3>
-        <ul>
-          <li onClick={() => navigate('/')}>Início</li>
-          <li onClick={() => navigate('/profile')}>Sua conta</li>
-          <li onClick={handleLogout}>Sair</li>
+        <h1>🛍️ E-commerce</h1>
+        {isUserLogged && <h3>Olá, {loggedUrer?.name}</h3>}
+        <ul className="md-5">
+          {isUserLogged && <li onClick={() => navigate('/')}>Início</li>}
+          {isUserLogged && (
+            <li onClick={() => navigate('/profile')}>Sua conta</li>
+          )}
+          {isUserLogged && <li onClick={handleLogout}>Sair</li>}
         </ul>
       </div>
       <div className="content">

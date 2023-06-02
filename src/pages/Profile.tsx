@@ -4,6 +4,7 @@ import { User } from './Register'
 import { deleteUserService, updateUserService } from '../services/api'
 import { useAuthContext } from '../contexts/auth'
 import { ToastContainer, toast } from 'react-toastify'
+import { isObjectComplete } from '../utils'
 
 const initialCurrentUser = {
   email: '',
@@ -23,6 +24,8 @@ const Profile: React.FC = () => {
       address: state.user?.address ?? '',
     })
   }, [state])
+  const isCurrentUserComplete = isObjectComplete(currentUser)
+  const isPasswordComplete = isObjectComplete({ password })
 
   const handleEmailChange = (email: User['email']) => {
     setCurrentUser({ ...currentUser, email: email ?? '' })
@@ -55,7 +58,6 @@ const Profile: React.FC = () => {
     try {
       await deleteUserService(password, tokens.accessToken)
       dispatchLogout()
-      // navigate('/login')
     } catch (err) {
       toast('Não foi possível deletar sua conta. Tente novamente, por favor.')
     }
@@ -96,8 +98,9 @@ const Profile: React.FC = () => {
             </div>
             <div className="flex flex-col w-full ">
               <button
-                className="p-2 bg-green-600 text-white rounded-md mb-10 hover:bg-green-800"
+                className="p-2 bg-green-600 text-white rounded-md mb-10 hover:bg-green-800 disabled:bg-slate-400"
                 onClick={handleUpdate}
+                disabled={!isCurrentUserComplete}
               >
                 Atualizar dados
               </button>
@@ -108,8 +111,9 @@ const Profile: React.FC = () => {
                 onChange={ev => handlePasswordChange(ev.target.value)}
               />
               <button
-                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800"
+                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800 disabled:bg-slate-400"
                 onClick={handleDelete}
+                disabled={!isPasswordComplete}
               >
                 Apagar conta
               </button>

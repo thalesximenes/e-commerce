@@ -8,7 +8,9 @@ import { useAuthContext } from '../../contexts/auth'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
-  const [, { dispatchLogout }] = useAuthContext()
+  const [state, { dispatchLogout }] = useAuthContext()
+  const loggedUrer = state.user
+  const isUserLogged = !!loggedUrer
 
   const handleLogout = async () => {
     await dispatchLogout()
@@ -17,12 +19,20 @@ const Home: React.FC = () => {
   return (
     <div className="home-container">
       <div className="menu-container">
-        <h3>🛍️ E-commerce</h3>
-        <ul>
-          <li>Início</li>
-          <li onClick={() => navigate('/profile')}>Sua conta</li>
-          <li onClick={() => navigate('/adm')}>Administrador</li>
-          <li onClick={handleLogout}>Sair</li>
+        <h1>🛍️ E-commerce</h1>
+        {isUserLogged && <h3>Olá, {loggedUrer?.name}</h3>}
+        <ul className="md-5">
+          {isUserLogged && (
+            <li onClick={() => navigate('/profile')}>Sua conta</li>
+          )}
+          {isUserLogged && (
+            <li onClick={() => navigate('/adm')}>Administrador</li>
+          )}
+          {isUserLogged && <li onClick={handleLogout}>Sair</li>}
+          {!isUserLogged && <li onClick={() => navigate('/login')}>Login</li>}
+          {!isUserLogged && (
+            <li onClick={() => navigate('/register')}>Cadastro</li>
+          )}
         </ul>
       </div>
       <div className="main-list">

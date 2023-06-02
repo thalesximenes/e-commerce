@@ -5,9 +5,20 @@
 }
 
 .menu {
-  width: 15%;
+  width: 25%;
   background-color: white;
-  padding: 1rem;
+  padding: 2rem;
+}
+
+.menu h1 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.menu h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-style: italic;
 }
 
 .menu ul {

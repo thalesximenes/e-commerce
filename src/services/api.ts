@@ -46,12 +46,27 @@ export const signOutService = (refreshToken: string, accessToken: string) => {
 
 type UserUpdate = Omit<User, 'id' | 'role'>
 
-export const updateUserService = (payload: UserUpdate) => {
-  return api.patch('user', payload).then((res: Temp) => res.data)
+export const updateUserService = (payload: UserUpdate, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.patch('user', payload, config).then((res: Temp) => res.data)
 }
 
-export const deleteUserService = () => {
-  return api.delete('user', {}).then((res: Temp) => res.data)
+export const deleteUserService = (payload: string, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    data: {
+      currentPassword: payload,
+    },
+  }
+
+  return api.delete('user', config).then((res: Temp) => res.data)
 }
 
 export default api

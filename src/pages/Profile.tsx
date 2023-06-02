@@ -1,42 +1,63 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, initialNewUser } from './Register'
-import { updateUserService } from '../services/api'
+import { User } from './Register'
+import { deleteUserService, updateUserService } from '../services/api'
 import { useAuthContext } from '../contexts/auth'
 import { ToastContainer, toast } from 'react-toastify'
 
+const initialCurrentUser = {
+  email: '',
+  name: '',
+  address: '',
+}
+
 const Profile: React.FC = () => {
   const navigate = useNavigate()
-  const [currentUser, setCurrentUser] = useState<User>(initialNewUser)
-  const [state] = useAuthContext()
-  const useEdited = state.user
+  const [currentUser, setCurrentUser] = useState(initialCurrentUser)
+  const [password, setPassword] = useState('')
+  const [state, { tokens, processLogin, dispatchLogout }] = useAuthContext()
   useEffect(() => {
     setCurrentUser({
-      email: useEdited?.email ?? '',
-      name: useEdited?.name,
-      address: useEdited?.address,
+      email: state.user?.email ?? '',
+      name: state.user?.name ?? '',
+      address: state.user?.address ?? '',
     })
-  }, [useEdited])
+  }, [state])
 
   const handleEmailChange = (email: User['email']) => {
-    setCurrentUser({ ...currentUser, email: email })
+    setCurrentUser({ ...currentUser, email: email ?? '' })
   }
 
   const handleNameChange = (name: User['name']) => {
-    setCurrentUser({ ...currentUser, name: name })
+    setCurrentUser({ ...currentUser, name: name ?? '' })
   }
 
   const handleAddressChange = (address: User['address']) => {
-    setCurrentUser({ ...currentUser, address: address })
+    setCurrentUser({ ...currentUser, address: address ?? '' })
   }
 
   const handleUpdate = async () => {
     try {
-      const response = await updateUserService(currentUser)
+      const response = await updateUserService(currentUser, tokens.accessToken)
       console.log(response)
+      processLogin(response)
       navigate('/')
     } catch (err) {
       toast('Falha na atualização. Tente novamente, por favor.')
+    }
+  }
+
+  const handlePasswordChange = (password: string) => {
+    setPassword(password)
+  }
+
+  const handleDelete = async () => {
+    try {
+      await deleteUserService(password, tokens.accessToken)
+      dispatchLogout()
+      // navigate('/login')
+    } catch (err) {
+      toast('Não foi possível deletar sua conta. Tente novamente, por favor.')
     }
   }
 
@@ -44,14 +65,13 @@ const Profile: React.FC = () => {
     <div className="flex justify-center items-center h-screen w-screen bg-green-900">
       <div className="flex flex-col min-h-fit w-1/4 justify-center items-center bg-white rounded-lg">
         <div className="flex flex-col h-full justify-center items-center">
-          <div className="flex flex-col items-center h-full p-8">
-            <div className="flex flex-col mb-2">
-              <h1 className="text-3xl text-gray-500">
-                {' '}
+          <div className="flex flex-col items-center h-full p-8 rounded-lg">
+            <div className="flex flex-col mb-5">
+              <h1 className="text-2xl text-gray-500">
                 Atualizar Dados de Usuário{' '}
               </h1>
             </div>
-            <div className="flex flex-col mt-4 mb-3">
+            <div className="flex flex-col mt-4 mb-3 w-full">
               <input
                 type="email"
                 placeholder="E-mail"
@@ -76,16 +96,29 @@ const Profile: React.FC = () => {
             </div>
             <div className="flex flex-col w-full ">
               <button
-                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800"
-                onClick={() => handleUpdate}
+                className="p-2 bg-green-600 text-white rounded-md mb-10 hover:bg-green-800"
+                onClick={handleUpdate}
               >
                 Atualizar dados
+              </button>
+              <input
+                type="password"
+                placeholder="Senha"
+                className="p-2 border-2 border-gray-300 rounded-md mb-3"
+                onChange={ev => handlePasswordChange(ev.target.value)}
+              />
+              <button
+                className="p-2 bg-red-500 text-white rounded-md mb-4 hover:bg-red-800"
+                onClick={handleDelete}
+              >
+                Apagar conta
               </button>
               <div className="flex flex-col w-full ">
                 <a href="/">Voltar para tela inicial</a>
               </div>
             </div>
           </div>
+          <div className="flex flex-col w-full"></div>
           <ToastContainer />
         </div>
       </div>

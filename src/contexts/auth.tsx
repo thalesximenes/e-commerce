@@ -98,6 +98,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           loading,
           dispatchLogin,
           dispatchLogout,
+          tokens,
+          processLogin,
         },
       ]}
     >

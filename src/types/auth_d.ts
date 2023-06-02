@@ -15,6 +15,11 @@ export interface AuthDispatch {
   loading: boolean
   dispatchLogin: (payload: ISignIn) => Promise<void>
   dispatchLogout: () => Promise<void>
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
+  processLogin: (user: User) => void
 }
 
 export type AuthContextData = [AuthState, AuthDispatch]

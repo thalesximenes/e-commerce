@@ -69,4 +69,24 @@ export const deleteUserService = (payload: string, accessToken: string) => {
   return api.delete('user', config).then((res: Temp) => res.data)
 }
 
+export const productListService = (accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.get('product/findAll', config).then((res: Temp) => res.data)
+}
+
+export const categoryListService = (accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.get('category/', config).then((res: Temp) => res.data)
+}
+
 export default api

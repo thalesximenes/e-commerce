@@ -5,8 +5,6 @@ const PrivateRoute = ({ children }: any) => {
   const [state] = useAuthContext()
   const isAuthenticated = !!state.user
 
-  console.log(state)
-
   return isAuthenticated ? <>{children}</> : <Navigate to="/" />
 }
 

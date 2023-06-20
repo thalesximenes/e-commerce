@@ -86,7 +86,17 @@ export const categoryListService = (accessToken: string) => {
     },
   }
 
-  return api.get('category/', config).then((res: Temp) => res.data)
+  return api.get('category', config).then((res: Temp) => res.data)
+}
+
+export const addCategoryService = (payload: string, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.post('category', { name: payload }, config)
 }
 
 export default api

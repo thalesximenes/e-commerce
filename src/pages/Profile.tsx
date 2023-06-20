@@ -42,7 +42,6 @@ const Profile: React.FC = () => {
   const handleUpdate = async () => {
     try {
       const response = await updateUserService(currentUser, tokens.accessToken)
-      console.log(response)
       processLogin(response)
       navigate('/')
     } catch (err) {

@@ -21,6 +21,7 @@ export interface ProductsDispatch {
   categoryList: ICategory[] | undefined
   dispatchProductList: (payload: any) => Promise<void>
   dispatchCategoryList: (payload: any) => Promise<void>
+  dispatchAddCategory: (name: string, payload: any) => Promise<void>
 }
 
 export type ProductContextData = [ProductsDispatch]

@@ -5,7 +5,11 @@ import {
   ProductContextData,
   ProductsProviderProps,
 } from '../types/products'
-import { categoryListService, productListService } from '../services/api'
+import {
+  addCategoryService,
+  categoryListService,
+  productListService,
+} from '../services/api'
 import { toast } from 'react-toastify'
 
 export const ProductContext = React.createContext<ProductContextData>(
@@ -61,6 +65,23 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     }
   }, [])
 
+  const dispatchAddCategory = useCallback(async (name: string, token: any) => {
+    try {
+      setLoading(true)
+
+      const data = await addCategoryService(name, token)
+      console.log(data)
+
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000)
+    } catch (e) {
+      setLoading(false)
+      console.log(e)
+      //toast('Falha ao resgatar lista de produtos.')
+    }
+  }, [])
+
   return (
     <ProductContext.Provider
       value={[
@@ -68,6 +89,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
           loading,
           dispatchProductList,
           dispatchCategoryList,
+          dispatchAddCategory,
           categoryList,
           productsList,
         },

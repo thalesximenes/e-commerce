@@ -22,6 +22,7 @@ export interface ProductsDispatch {
   dispatchProductList: (payload: any) => Promise<void>
   dispatchCategoryList: (payload: any) => Promise<void>
   dispatchAddCategory: (name: string, payload: any) => Promise<void>
+  dispatchDeleteCategory: (id: string, payload: any) => Promise<void>
 }
 
 export type ProductContextData = [ProductsDispatch]

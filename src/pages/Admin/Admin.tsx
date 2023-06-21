@@ -44,6 +44,7 @@ const Admin: React.FC = () => {
       productsList,
       categoryList,
       dispatchAddCategory,
+      dispatchDeleteCategory,
       dispatchProductList,
       dispatchCategoryList,
     },
@@ -64,8 +65,8 @@ const Admin: React.FC = () => {
 
   useEffect(() => {
     if (firstLoad.current) {
-      dispatchProductList(persistToken().get())
-      dispatchCategoryList(persistToken().get())
+      dispatchProductList(tokens.accessToken)
+      dispatchCategoryList(tokens.accessToken)
       firstLoad.current = false
     }
   }, [])
@@ -74,18 +75,30 @@ const Admin: React.FC = () => {
     e.preventDefault()
   }
 
-  const handleAddCategory = (e: any) => {
+  const handleAddCategory = async (e: any) => {
     e.preventDefault()
-    console.log(tokens)
     try {
       if (categoryName.trim() !== '') {
-        dispatchAddCategory(categoryName, tokens.accessToken)
+        await dispatchAddCategory(categoryName, tokens.accessToken)
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setOpenCategory(false)
+      setCategoryName('')
+    }
+  }
+
+  const handleDeleteCategory = async (id: string) => {
+    console.log('aqui')
+    try {
+      if (id.trim() !== '') {
+        await dispatchDeleteCategory(id, tokens.accessToken)
       }
     } catch (err) {
       console.log(err)
     }
   }
-
   return (
     <div className="admin-page">
       <div className="menu">
@@ -136,7 +149,15 @@ const Admin: React.FC = () => {
                 return (
                   <li key={category.id}>
                     <h3>{category.name}</h3>
-                    <span>{category.description}</span>
+                    <span>
+                      <button>Editar</button>
+                      <button
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="ml-2 text-red"
+                      >
+                        <p className="text-red-600">Deletar</p>
+                      </button>
+                    </span>
                   </li>
                 )
               })

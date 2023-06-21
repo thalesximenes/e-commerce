@@ -8,6 +8,7 @@ import {
 import {
   addCategoryService,
   categoryListService,
+  deleteCategoryService,
   productListService,
 } from '../services/api'
 import { toast } from 'react-toastify'
@@ -79,6 +80,27 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
       setLoading(false)
       console.log(e)
       //toast('Falha ao resgatar lista de produtos.')
+    } finally {
+      dispatchCategoryList(token)
+    }
+  }, [])
+
+  const dispatchDeleteCategory = useCallback(async (id: string, token: any) => {
+    try {
+      setLoading(true)
+
+      const data = await deleteCategoryService(id, token)
+      console.log(data)
+
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000)
+    } catch (e) {
+      setLoading(false)
+      console.log(e)
+      //toast('Falha ao resgatar lista de produtos.')
+    } finally {
+      dispatchCategoryList(token)
     }
   }, [])
 
@@ -90,6 +112,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
           dispatchProductList,
           dispatchCategoryList,
           dispatchAddCategory,
+          dispatchDeleteCategory,
           categoryList,
           productsList,
         },

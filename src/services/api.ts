@@ -99,4 +99,14 @@ export const addCategoryService = (payload: string, accessToken: string) => {
   return api.post('category', { name: payload }, config)
 }
 
+export const deleteCategoryService = (payload: string, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.delete(`category/${payload}`, config)
+}
+
 export default api

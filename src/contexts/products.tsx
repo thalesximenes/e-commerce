@@ -15,7 +15,7 @@ import {
   updateCategoryService,
   updateProductService,
 } from '../services/api'
-import { toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 
 export const ProductContext = React.createContext<ProductContextData>(
   {} as ProductContextData
@@ -48,7 +48,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     } catch (e) {
       setProductsList(initialState.productsList)
       setLoading(false)
-      //toast('Falha ao resgatar lista de produtos.')
+      toast('Falha ao resgatar lista de produtos.')
     }
   }, [])
 
@@ -66,7 +66,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
       } catch (e) {
         setLoading(false)
         console.log(e)
-        //toast('Falha ao resgatar lista de produtos.')
+        toast('Falha ao adicionar produto.')
       } finally {
         dispatchProductList(token)
       }
@@ -88,7 +88,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
       } catch (e) {
         setLoading(false)
         console.log(e)
-        //toast('Falha ao resgatar lista de produtos.')
+        toast('Falha ao atualizar produto.')
       } finally {
         dispatchProductList(token)
       }
@@ -109,7 +109,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     } catch (e) {
       setLoading(false)
       console.log(e)
-      //toast('Falha ao resgatar lista de produtos.')
+      toast('Falha ao deletar produtos.')
     } finally {
       dispatchProductList(token)
     }
@@ -129,7 +129,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     } catch (e) {
       setCategoryList(initialState.categoryList)
       setLoading(false)
-      //toast('Falha ao resgatar lista de produtos.')
+      toast('Falha ao resgatar lista de categorias.')
     }
   }, [])
 
@@ -146,7 +146,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     } catch (e) {
       setLoading(false)
       console.log(e)
-      //toast('Falha ao resgatar lista de produtos.')
+      toast('Falha ao resgatar adicionar categoria.')
     } finally {
       dispatchCategoryList(token)
     }
@@ -166,7 +166,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
       } catch (e) {
         setLoading(false)
         console.log(e)
-        //toast('Falha ao resgatar lista de produtos.')
+        toast('Falha ao atualizar categoria.')
       } finally {
         dispatchCategoryList(token)
       }
@@ -194,25 +194,28 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
   }, [])
 
   return (
-    <ProductContext.Provider
-      value={[
-        {
-          loading,
-          productsList,
-          dispatchProductList,
-          dispatchAddProduct,
-          dispatchUpdateProduct,
-          dispatchDeleteProduct,
-          categoryList,
-          dispatchCategoryList,
-          dispatchAddCategory,
-          dispatchDeleteCategory,
-          dispatchUpdateCategory,
-        },
-      ]}
-    >
-      {children}
-    </ProductContext.Provider>
+    <>
+      <ProductContext.Provider
+        value={[
+          {
+            loading,
+            productsList,
+            dispatchProductList,
+            dispatchAddProduct,
+            dispatchUpdateProduct,
+            dispatchDeleteProduct,
+            categoryList,
+            dispatchCategoryList,
+            dispatchAddCategory,
+            dispatchDeleteCategory,
+            dispatchUpdateCategory,
+          },
+        ]}
+      >
+        {children}
+      </ProductContext.Provider>
+      <ToastContainer />
+    </>
   )
 }
 

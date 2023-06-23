@@ -8,6 +8,7 @@ import { Fragment, useState, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useProductContext } from '../../contexts/products'
 import { IProduct } from '../../types/products'
+import { ToastContainer, toast } from 'react-toastify'
 
 const Admin: React.FC = () => {
   const [
@@ -81,14 +82,15 @@ const Admin: React.FC = () => {
           +product.stock >= 0
         ) {
           await dispatchUpdateProduct(product, token.get())
+          setOpen(false)
+          setCategoryName('')
+          setIdUpdate('')
+          setEditProduct(false)
+        } else {
+          toast('Preencha todas as informações.')
         }
       } catch (err) {
         console.log(err)
-      } finally {
-        setOpen(false)
-        setCategoryName('')
-        setIdUpdate('')
-        setEditProduct(false)
       }
     } else {
       try {
@@ -100,12 +102,13 @@ const Admin: React.FC = () => {
           +product?.stock >= 0
         ) {
           await dispatchAddProduct(product, token.get())
+          setOpen(false)
+          setCategoryName('')
+        } else {
+          toast('Preencha todas as informações.')
         }
       } catch (err) {
         console.log(err)
-      } finally {
-        setOpenCategory(false)
-        setCategoryName('')
       }
     }
   }
@@ -136,25 +139,27 @@ const Admin: React.FC = () => {
       try {
         if (categoryName.trim() !== '') {
           await dispatchUpdateCategory(idUpdate, categoryName, token.get())
+          setOpenCategory(false)
+          setCategoryName('')
+          setIdUpdate('')
+          setEditCategory(false)
+        } else {
+          toast('Preencha todas as informações.')
         }
       } catch (err) {
         console.log(err)
-      } finally {
-        setOpenCategory(false)
-        setCategoryName('')
-        setIdUpdate('')
-        setEditCategory(false)
       }
     } else {
       try {
         if (categoryName.trim() !== '') {
           await dispatchAddCategory(categoryName, token.get())
+          setOpenCategory(false)
+          setCategoryName('')
+        } else {
+          toast('Preencha todas as informações.')
         }
       } catch (err) {
         console.log(err)
-      } finally {
-        setOpenCategory(false)
-        setCategoryName('')
       }
     }
   }
@@ -541,6 +546,7 @@ const Admin: React.FC = () => {
           </div>
         </Dialog>
       </Transition.Root>
+      <ToastContainer />
     </div>
   )
 }

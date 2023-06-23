@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { IRegister, ISignIn } from '../types/User'
 import { IUserLoggedIn } from '../types/User'
+import { IProduct } from '../types/products'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -76,7 +77,59 @@ export const productListService = (accessToken: string) => {
     },
   }
 
-  return api.get('product/findAll', config).then((res: Temp) => res.data)
+  return api.get('product', config).then((res: Temp) => res.data)
+}
+
+export const addProductService = (payload: IProduct, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.post(
+    'product',
+    {
+      ...payload,
+      basePrice: +payload.basePrice,
+      stock: +payload.stock,
+      discountPercentage: 0,
+    },
+    config
+  )
+}
+
+export const updateProductService = (
+  payload: IProduct,
+  accessToken: string
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.patch(
+    `product/${payload.id}`,
+    {
+      ...payload,
+      id: undefined,
+      createdAt: undefined,
+      urlName: undefined,
+      basePrice: +payload.basePrice,
+    },
+    config
+  )
+}
+
+export const deleteProductService = (payload: string, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.delete(`product/${payload}`, config)
 }
 
 export const categoryListService = (accessToken: string) => {
@@ -97,6 +150,20 @@ export const addCategoryService = (payload: string, accessToken: string) => {
   }
 
   return api.post('category', { name: payload }, config)
+}
+
+export const updateCategoryService = (
+  id: string,
+  name: string,
+  accessToken: string
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.patch(`category/${id}`, { name: name }, config)
 }
 
 export const deleteCategoryService = (payload: string, accessToken: string) => {

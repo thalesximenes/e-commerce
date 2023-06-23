@@ -39,6 +39,8 @@
   flex: 3;
   padding: 20px;
   background-color: #1f9d85;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .main-list h1 {
@@ -61,7 +63,6 @@
 }
 
 .product img {
-  width: 100%;
   max-width: 150px;
   height: auto;
   margin-bottom: 10px;

@@ -7,9 +7,13 @@ import {
 } from '../types/products'
 import {
   addCategoryService,
+  addProductService,
   categoryListService,
   deleteCategoryService,
+  deleteProductService,
   productListService,
+  updateCategoryService,
+  updateProductService,
 } from '../services/api'
 import { toast } from 'react-toastify'
 
@@ -28,7 +32,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
 }: ProductsProviderProps) => {
   const [loading, setLoading] = useState(false)
   const [productsList, setProductsList] = useState<IProduct[]>()
-  const [categoryList, setCategoryList] = useState<ICategory[]>()
+  const [categoryList, setCategoryList] = useState<ICategory[]>([])
 
   const dispatchProductList = useCallback(async (tokens: any) => {
     try {
@@ -48,13 +52,76 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     }
   }, [])
 
+  const dispatchAddProduct = useCallback(
+    async (payload: IProduct, token: any) => {
+      try {
+        setLoading(true)
+
+        const data = await addProductService(payload, token)
+        console.log(data)
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 2000)
+      } catch (e) {
+        setLoading(false)
+        console.log(e)
+        //toast('Falha ao resgatar lista de produtos.')
+      } finally {
+        dispatchProductList(token)
+      }
+    },
+    []
+  )
+
+  const dispatchUpdateProduct = useCallback(
+    async (payload: IProduct, token: any) => {
+      try {
+        setLoading(true)
+
+        const data = await updateProductService(payload, token)
+        console.log(data)
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 2000)
+      } catch (e) {
+        setLoading(false)
+        console.log(e)
+        //toast('Falha ao resgatar lista de produtos.')
+      } finally {
+        dispatchProductList(token)
+      }
+    },
+    []
+  )
+
+  const dispatchDeleteProduct = useCallback(async (id: string, token: any) => {
+    try {
+      setLoading(true)
+
+      const data = await deleteProductService(id, token)
+      console.log(data)
+
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000)
+    } catch (e) {
+      setLoading(false)
+      console.log(e)
+      //toast('Falha ao resgatar lista de produtos.')
+    } finally {
+      dispatchProductList(token)
+    }
+  }, [])
+
   const dispatchCategoryList = useCallback(async (tokens: any) => {
     try {
       setLoading(true)
 
       const data: any = await categoryListService(tokens.accessToken)
 
-      setCategoryList(data)
+      setCategoryList([...categoryList, ...data])
 
       setTimeout(() => {
         setLoading(false)
@@ -85,6 +152,28 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     }
   }, [])
 
+  const dispatchUpdateCategory = useCallback(
+    async (id: string, name: string, token: any) => {
+      try {
+        setLoading(true)
+
+        const data = await updateCategoryService(id, name, token)
+        console.log(data)
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 2000)
+      } catch (e) {
+        setLoading(false)
+        console.log(e)
+        //toast('Falha ao resgatar lista de produtos.')
+      } finally {
+        dispatchCategoryList(token)
+      }
+    },
+    []
+  )
+
   const dispatchDeleteCategory = useCallback(async (id: string, token: any) => {
     try {
       setLoading(true)
@@ -109,12 +198,16 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
       value={[
         {
           loading,
+          productsList,
           dispatchProductList,
+          dispatchAddProduct,
+          dispatchUpdateProduct,
+          dispatchDeleteProduct,
+          categoryList,
           dispatchCategoryList,
           dispatchAddCategory,
           dispatchDeleteCategory,
-          categoryList,
-          productsList,
+          dispatchUpdateCategory,
         },
       ]}
     >

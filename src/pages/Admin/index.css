@@ -51,12 +51,11 @@ body, html {
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 85%;
-  padding: 2rem;
+  flex: 3;
+  padding: 20px;
+  background-color: #1f9d85;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .product-list {

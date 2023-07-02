@@ -1,19 +1,23 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './index.css'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../../contexts/auth'
 import { useProductContext } from '../../contexts/products'
 import { persistToken, persistUser } from '../../utils/storage'
 import { IProduct } from '../../types/products'
+import { useCookies } from 'react-cookie';
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
   const [state, { dispatchLogout }] = useAuthContext()
-  const loggedUrer = state.user
-  const isUserLogged = !!loggedUrer
+  const loggedUser = state.user
+  const isUserLogged = !!loggedUser
   const firstLoad = useRef(true)
   const token = persistToken()
   const user = persistUser()
+  const [cookies, setCookie] = useCookies();
+  const [cartItems, setCartItems] = useState<IProduct[]>([]);
+
   const productInitialState: IProduct = {
     id: undefined,
     name: '',
@@ -27,10 +31,25 @@ const Home: React.FC = () => {
 
   const product = productInitialState
 
-  const [{ productsList, dispatchProductList }] = useProductContext()
+  const [{ productsList, loading, dispatchProductList }] = useProductContext()
   const handleLogout = async () => {
     await dispatchLogout()
   }
+
+  useEffect(() => {
+    const savedCartItems: IProduct[] = cookies.carrinho || [];
+
+    setCartItems(savedCartItems);
+  }, [cookies]);
+
+  const handleAddToCart = (product: IProduct) => {
+    const updatedCartItems: IProduct[] = [...cartItems];
+
+    updatedCartItems.push(product);
+    setCartItems(updatedCartItems);
+    setCookie('carrinho', updatedCartItems, { path: '/' });
+  };
+  
 
   useEffect(() => {
     if (firstLoad.current) {
@@ -39,11 +58,17 @@ const Home: React.FC = () => {
     }
   }, [])
 
+  const calculateTotalPrice = () => {
+    const totalPrice = cartItems.reduce((accumulator, item) => accumulator + parseFloat(item.basePrice.toString()), 0);
+    return totalPrice.toFixed(2);
+    return 0
+  };
+
   return (
     <div className="home-container">
       <div className="menu-container">
         <h1>🛍️ E-commerce</h1>
-        {isUserLogged && <h3>Olá, {loggedUrer?.name}</h3>}
+        {isUserLogged && <h3>Olá, {loggedUser?.name}</h3>}
         <ul className="md-5">
           {isUserLogged && (
             <li onClick={() => navigate('/profile')}>Sua conta</li>
@@ -62,7 +87,12 @@ const Home: React.FC = () => {
         <h2>Lista de Produtos</h2>
         <div className="products-container">
           <ul>
-            {productsList && productsList.length !== 0 ? (
+            {loading && (
+              <>
+                <span>Carregando</span>
+              </>
+            )}
+            {!loading && productsList && productsList.length !== 0 && (
               productsList?.map(product => (
                 <div className="product" key={product.id}>
                   <div className="flex">
@@ -77,11 +107,16 @@ const Home: React.FC = () => {
                     <span>Categorias: </span>
                     <h2>{product.categories?.map(c => c.name).join(', ')}</h2>
                     <p>R$ {(+product.basePrice).toFixed(2)}</p>
-                    <button>Adicionar ao carrinho</button>
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      Adicionar ao carrinho
+                    </button>
                   </div>
                 </div>
               ))
-            ) : (
+            )}
+            {!loading && !productsList || productsList?.length == 0 && (
               <li key={product.id}>
                 <img
                   src={
@@ -101,23 +136,28 @@ const Home: React.FC = () => {
       <div className="cart-container">
         <h2>Carrinho de compras</h2>
         <ul>
-          <li>Produto 1 - R$ 99,99</li>
-          <li>Produto 2 - R$ 149,99</li>
+          {cartItems && cartItems.map((item: IProduct, index: number) => (
+            <li key={index}>{item.name} - R$ {parseFloat(item.basePrice.toString()).toFixed(2)}</li>
+          ))}
         </ul>
-        <h3>Total: R$ 249,98</h3>
+        <h3>Total: R$ {calculateTotalPrice()}</h3>
         <button>Finalizar compra</button>
       </div>
-      <div className="past-orders-container">
-        <h2>Compras passadas</h2>
-        <ul>
-          <li>
-            Compra 1 - R$ 99,99 - <a href="#">Ver detalhes</a>
-          </li>
-          <li>
-            Compra 2 - R$ 149,99 - <a href="#">Ver detalhes</a>
-          </li>
-        </ul>
-      </div>
+      {isUserLogged && (
+        <>
+          <div className="past-orders-container">
+            <h2>Compras passadas</h2>
+            <ul>
+              <li>
+                Compra 1 - R$ 99,99 - <a href="#">Ver detalhes</a>
+              </li>
+              <li>
+                Compra 2 - R$ 149,99 - <a href="#">Ver detalhes</a>
+              </li>
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -70,14 +70,8 @@ export const deleteUserService = (payload: string, accessToken: string) => {
   return api.delete('user', config).then((res: Temp) => res.data)
 }
 
-export const productListService = (accessToken: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  }
-
-  return api.get('product', config).then((res: Temp) => res.data)
+export const productListService = () => {
+  return api.get('product').then((res: Temp) => res.data)
 }
 
 export const addProductService = (payload: IProduct, accessToken: string) => {
@@ -132,14 +126,8 @@ export const deleteProductService = (payload: string, accessToken: string) => {
   return api.delete(`product/${payload}`, config)
 }
 
-export const categoryListService = (accessToken: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  }
-
-  return api.get('category', config).then((res: Temp) => res.data)
+export const categoryListService = () => {
+  return api.get('category').then((res: Temp) => res.data)
 }
 
 export const addCategoryService = (payload: string, accessToken: string) => {

@@ -38,7 +38,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     try {
       setLoading(true)
 
-      const data = await productListService(tokens.accessToken)
+      const data = await productListService()
 
       setProductsList(data)
 
@@ -48,6 +48,7 @@ const ProductsProvider: React.FC<ProductsProviderProps> = ({
     } catch (e) {
       setProductsList(initialState.productsList)
       setLoading(false)
+      console.log(e)
       toast('Falha ao resgatar lista de produtos.')
     }
   }, [])

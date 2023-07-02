@@ -158,3 +158,8 @@
 .past-orders-container a:hover {
   text-decoration: underline;
 }
+
+.cart-item-divider {
+  margin-top: 20px;
+  border-top: 1px solid black;
+}

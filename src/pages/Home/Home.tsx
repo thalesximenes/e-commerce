@@ -50,6 +50,11 @@ const Home: React.FC = () => {
     setCookie('carrinho', updatedCartItems, { path: '/' });
   };
   
+  const handleRemoveFromCart = (product: IProduct) => {
+    const updatedCartItems: IProduct[] = cartItems.filter(item => item.id !== product.id);
+    setCartItems(updatedCartItems);
+    setCookie('carrinho', updatedCartItems, { path: '/' });
+  };
 
   useEffect(() => {
     if (firstLoad.current) {
@@ -137,7 +142,11 @@ const Home: React.FC = () => {
         <h2>Carrinho de compras</h2>
         <ul>
           {cartItems && cartItems.map((item: IProduct, index: number) => (
-            <li key={index}>{item.name} - R$ {parseFloat(item.basePrice.toString()).toFixed(2)}</li>
+            <li key={index}>
+              <div style={{marginBottom: '10px'}}>{item.name} - R$ {parseFloat(item.basePrice.toString()).toFixed(2)}</div>
+              <button onClick={() => handleRemoveFromCart(item)}>Remover</button>
+              <hr className='cart-item-divider'></hr><br></br>
+            </li>
           ))}
         </ul>
         <h3>Total: R$ {calculateTotalPrice()}</h3>

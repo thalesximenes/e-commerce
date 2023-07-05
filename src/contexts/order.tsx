@@ -40,7 +40,7 @@ const OrdersProvider: React.FC<OrdersProviderProps> = ({
       try {
         setAddingOrder(true)
 
-        const data = await addOrderService(payload, token)
+        await addOrderService(payload, token)
         setAddingOrder(false)
       } catch (e) {
         setAddingOrder(false)

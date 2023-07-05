@@ -7,7 +7,7 @@ import { useOrderContext } from '../../contexts/order'
 import { persistToken, persistUser } from '../../utils/storage'
 import { IProduct } from '../../types/products'
 import { useCookies } from 'react-cookie';
-import { IOrder, OrderItem } from '../../types/order'
+import { CreateOrderProduct, IOrder, OrderItem } from '../../types/order'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -67,16 +67,19 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (firstLoad.current) {
-      dispatchProductList(token.get())
+      const _token = token.get()
+      dispatchProductList(_token)
       firstLoad.current = false
+      if (_token) {
+        dispatchOrdersList(_token)
+      }
     }
   }, [])
 
-  useEffect(() => {
-    if (isUserLogged) {
-      dispatchOrdersList(token.get())
-    }
-  }, [])
+  // useEffect(() => {
+   
+  //   }
+  // }, [])
 
   const calculateTotalPrice = () => {
     const totalPrice = cartItems.reduce((accumulator, item) => accumulator + parseFloat(item.basePrice.toString()), 0);
@@ -93,8 +96,22 @@ const Home: React.FC = () => {
     }
   }
 
-  const proccessOrder = () => {
-    // 
+  const proccessOrder = async () => {
+    const orderItems = cartItems.reduce((result: CreateOrderProduct[], item) => {
+      const existingItem = result.find((element: CreateOrderProduct) => element.productId === item.id);
+    
+      if (existingItem) {
+        existingItem.amount++;
+      } else {
+        result.push({ productId: item.id!, amount: 1 });
+      }
+    
+      return result;
+    }, []);
+
+    await dispatchAddOrder({products: orderItems}, token.get())
+    setCartItems([]);
+    setCookie('carrinho', [], { path: '/' });
   }
 
   return (
@@ -179,7 +196,7 @@ const Home: React.FC = () => {
         <h3>Total: R$ {calculateTotalPrice()}</h3>
         <button onClick={() => finishOrder()}>Finalizar compra</button>
       </div>
-      {isUserLogged && (
+      {(isUserLogged || token.get()) && (
         <>
           <div className="past-orders-container">
             <h2>Compras passadas</h2>

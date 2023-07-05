@@ -11,7 +11,7 @@ export interface OrderProduct {
     basePrice: string
 }
 
-interface CreateOrderProduct {
+export interface CreateOrderProduct {
     productId: string
     amount: number
 }

@@ -3,9 +3,11 @@ import './index.css'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../../contexts/auth'
 import { useProductContext } from '../../contexts/products'
+import { useOrderContext } from '../../contexts/order'
 import { persistToken, persistUser } from '../../utils/storage'
 import { IProduct } from '../../types/products'
 import { useCookies } from 'react-cookie';
+import { IOrder, OrderItem } from '../../types/order'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -32,6 +34,13 @@ const Home: React.FC = () => {
   const product = productInitialState
 
   const [{ productsList, loading, dispatchProductList }] = useProductContext()
+  const {
+    ordersList,
+    loading: loadingOrders,
+    dispatchOrdersList,
+    dispatchAddOrder,
+  } = useOrderContext()
+
   const handleLogout = async () => {
     await dispatchLogout()
   }
@@ -63,11 +72,30 @@ const Home: React.FC = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isUserLogged) {
+      dispatchOrdersList(token.get())
+    }
+  }, [])
+
   const calculateTotalPrice = () => {
     const totalPrice = cartItems.reduce((accumulator, item) => accumulator + parseFloat(item.basePrice.toString()), 0);
     return totalPrice.toFixed(2);
     return 0
   };
+
+  const finishOrder = () => {
+    if(isUserLogged) {
+      proccessOrder()
+    }
+    else {
+      navigate('/login')
+    }
+  }
+
+  const proccessOrder = () => {
+    // 
+  }
 
   return (
     <div className="home-container">
@@ -131,7 +159,6 @@ const Home: React.FC = () => {
                 />
                 <div>
                   <h3>Sem Produtos Cadastrados</h3>
-                  <span>R$ {(+product.basePrice).toFixed(2)}</span>
                 </div>
               </li>
             )}
@@ -150,20 +177,48 @@ const Home: React.FC = () => {
           ))}
         </ul>
         <h3>Total: R$ {calculateTotalPrice()}</h3>
-        <button>Finalizar compra</button>
+        <button onClick={() => finishOrder()}>Finalizar compra</button>
       </div>
       {isUserLogged && (
         <>
           <div className="past-orders-container">
             <h2>Compras passadas</h2>
-            <ul>
-              <li>
-                Compra 1 - R$ 99,99 - <a href="#">Ver detalhes</a>
-              </li>
-              <li>
-                Compra 2 - R$ 149,99 - <a href="#">Ver detalhes</a>
-              </li>
-            </ul>
+            {loadingOrders
+              ? (
+                <>
+                  <span>Carregando</span>
+                </>
+              )
+              : <>
+                <ul>
+                  {ordersList && ordersList.map((order: IOrder) => {
+                    const date = new Date(order.createdAt);
+                    const formattedDate = date.toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: false,
+                    });
+
+                    return (
+                      <div key={`order-${order.id}`}>
+                        <h1 style={{ fontWeight: 800 }}>{formattedDate}</h1>
+                        {order.purchaseItems.map((purchaseItem, index: number) => (
+                          <PurchaseItem
+                            key={`order-${order.id}-purchase-item-${index}`}
+                            purchaseItem={purchaseItem}
+                          />
+                        ))}
+                        <hr className="cart-item-divider"></hr>
+                        <br></br>
+                      </div>
+                    )
+                    })}
+                </ul>
+              </>
+            }
           </div>
         </>
       )}
@@ -172,3 +227,17 @@ const Home: React.FC = () => {
 }
 
 export default Home
+
+const PurchaseItem: React.FC<{ purchaseItem: OrderItem }> = ({ purchaseItem }) => {
+  return (
+    <li>
+      <div className="flex">
+        <img width="50px" height="50px" src={purchaseItem.product.picture} alt={purchaseItem.product.name} />
+        <span className="ml-2 text-left">
+          <p className="flex">{purchaseItem.product.name}</p>
+        </span>
+      </div>
+      <div style={{ marginBottom: "10px" }}></div>
+    </li>
+  );
+};

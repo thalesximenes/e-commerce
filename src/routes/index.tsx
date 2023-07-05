@@ -7,34 +7,37 @@ import Profile from '../pages/Profile'
 import { AuthProvider } from '../contexts/auth'
 import PrivateRoute from './private.routes'
 import { ProductsProvider } from '../contexts/products'
+import { OrdersProvider } from '../contexts/order'
 
 export const Router = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ProductsProvider>
-          <Routes>
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/adm"
-              element={
-                <PrivateRoute>
-                  <Admin />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </ProductsProvider>
+        <OrdersProvider>
+          <ProductsProvider>
+            <Routes>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/adm"
+                element={
+                  <PrivateRoute>
+                    <Admin />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoute>
+                    <Profile />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </ProductsProvider>
+        </OrdersProvider>
       </AuthProvider>
     </BrowserRouter>
   )

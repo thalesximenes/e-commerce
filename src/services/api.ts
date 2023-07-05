@@ -2,6 +2,7 @@ import axios from 'axios'
 import { IRegister, ISignIn } from '../types/User'
 import { IUserLoggedIn } from '../types/User'
 import { IProduct } from '../types/products'
+import { ICreateOrder } from '../types/order'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -162,6 +163,25 @@ export const deleteCategoryService = (payload: string, accessToken: string) => {
   }
 
   return api.delete(`category/${payload}`, config)
+}
+
+export const listOrdersService = (accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+  return api.get('purchase', config).then((res: Temp) => res.data)
+}
+
+export const addOrderService = (payload: ICreateOrder, accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+
+  return api.post('purchase', payload, config)
 }
 
 export default api

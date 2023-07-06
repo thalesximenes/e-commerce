@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 export interface OrderItem {
-    amout: number
+    amount: number
     product: OrderProduct
 }
 
@@ -28,9 +28,12 @@ export interface IOrder {
 
 export interface OrdersDispatch {
     loading: boolean
+    loadingAdmin: boolean
     addingOrder: boolean
     ordersList: IOrder[] | undefined
+    adminOrdersList: IOrder[] | undefined
     dispatchOrdersList: (token: string) => Promise<void>
+    dispatchAdminOrdersList: (token: string) => Promise<void>
     dispatchAddOrder: (payload: ICreateOrder, token: string) => Promise<void>
   }
   

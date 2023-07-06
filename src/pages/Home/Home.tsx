@@ -29,6 +29,7 @@ const Home: React.FC = () => {
     picture: '',
     urlName: undefined,
     description: '',
+    amount: undefined
   }
 
   const product = productInitialState
@@ -52,18 +53,43 @@ const Home: React.FC = () => {
   }, [cookies]);
 
   const handleAddToCart = (product: IProduct) => {
-    const updatedCartItems: IProduct[] = [...cartItems];
-
-    updatedCartItems.push(product);
+    const existingItemIndex = cartItems.findIndex((item) => item.id === product.id);
+  
+    if (existingItemIndex !== -1) {
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex]['amount']++;
+      setCartItems(updatedCartItems);
+      setCookie('carrinho', updatedCartItems, { path: '/' });
+    } else {
+      const updatedCartItems: IProduct[] = [...cartItems, { ...product, amount: 1 }];
+      setCartItems(updatedCartItems);
+      setCookie('carrinho', updatedCartItems, { path: '/' });
+    }
+  };
+  
+  
+  const handleRemoveFromCart = (product: IProduct) => {
+    const updatedCartItems = cartItems.map(item => {
+      if (item.id === product.id) {
+        const updatedItem = { ...item };
+  
+        if (updatedItem.amount > 1) {
+          updatedItem.amount--;
+        } else {
+          return null; // Remove the item from the array by returning null
+        }
+  
+        return updatedItem;
+      }
+  
+      return item;
+    }).filter(Boolean); // Filter out the null values (removed items)
+  
     setCartItems(updatedCartItems);
     setCookie('carrinho', updatedCartItems, { path: '/' });
   };
   
-  const handleRemoveFromCart = (product: IProduct) => {
-    const updatedCartItems: IProduct[] = cartItems.filter(item => item.id !== product.id);
-    setCartItems(updatedCartItems);
-    setCookie('carrinho', updatedCartItems, { path: '/' });
-  };
+  
 
   useEffect(() => {
     if (firstLoad.current) {
@@ -82,7 +108,7 @@ const Home: React.FC = () => {
   // }, [])
 
   const calculateTotalPrice = () => {
-    const totalPrice = cartItems.reduce((accumulator, item) => accumulator + parseFloat(item.basePrice.toString()), 0);
+    const totalPrice = cartItems.reduce((accumulator, item) => accumulator + parseFloat((item.basePrice * item.amount).toString()), 0);
     return totalPrice.toFixed(2);
     return 0
   };
@@ -97,18 +123,13 @@ const Home: React.FC = () => {
   }
 
   const proccessOrder = async () => {
-    const orderItems = cartItems.reduce((result: CreateOrderProduct[], item) => {
-      const existingItem = result.find((element: CreateOrderProduct) => element.productId === item.id);
-    
-      if (existingItem) {
-        existingItem.amount++;
-      } else {
-        result.push({ productId: item.id!, amount: 1 });
+    const orderItems = cartItems.map((item: IProduct) => {
+      return {
+        productId: item.id!,
+        amount: item.amount
       }
+    })
     
-      return result;
-    }, []);
-
     await dispatchAddOrder({products: orderItems}, token.get())
     setCartItems([]);
     setCookie('carrinho', [], { path: '/' });
@@ -117,7 +138,7 @@ const Home: React.FC = () => {
   return (
     <div className="home-container">
       <div className="menu-container">
-        <h1>🛍️ E-commerce</h1>
+        <h1 className='title'>🛍️ E-commerce</h1>
         {isUserLogged && <h3>Olá, {loggedUser?.name}</h3>}
         <ul className="md-5">
           {isUserLogged && (
@@ -134,7 +155,7 @@ const Home: React.FC = () => {
         </ul>
       </div>
       <div className="main-list">
-        <h2>Lista de Produtos</h2>
+        <h1 className='title'>Lista de Produtos</h1>
         <div className="products-container">
           <ul>
             {loading && (
@@ -145,6 +166,7 @@ const Home: React.FC = () => {
             {!loading && productsList && productsList.length !== 0 && (
               productsList?.map(product => (
                 <div className="product" key={product.id}>
+                  <p>{product.name}</p>
                   <div className="flex">
                     <img src={product.picture} alt={product.name} />
                     <span className="ml-2 text-left">
@@ -153,7 +175,6 @@ const Home: React.FC = () => {
                     </span>
                   </div>
                   <div>
-                    <p>{product.name}</p>
                     <span>Categorias: </span>
                     <h2>{product.categories?.map(c => c.name).join(', ')}</h2>
                     <p>R$ {(+product.basePrice).toFixed(2)}</p>
@@ -183,23 +204,30 @@ const Home: React.FC = () => {
         </div>
       </div>
       <div className="cart-container">
-        <h2>Carrinho de compras</h2>
+        <h1 className='title'>Carrinho de compras</h1>
         <ul>
-          {cartItems && cartItems.map((item: IProduct, index: number) => (
-            <li key={index}>
-              <div style={{marginBottom: '10px'}}>{item.name} - R$ {parseFloat(item.basePrice.toString()).toFixed(2)}</div>
+        {cartItems &&
+          cartItems.map((item: IProduct) => (
+            <li key={item.amount}>
+              <div style={{ marginBottom: '10px' }}>
+                {item.name} - R$ {parseFloat(item.basePrice.toString()).toFixed(2)} ({item.amount} unidades)
+              </div>
               <button onClick={() => handleRemoveFromCart(item)}>Remover</button>
-              <hr className='cart-item-divider'></hr><br></br>
+              <hr className='cart-item-divider'></hr>
+              <br></br>
             </li>
           ))}
+
         </ul>
         <h3>Total: R$ {calculateTotalPrice()}</h3>
-        <button onClick={() => finishOrder()}>Finalizar compra</button>
+        { cartItems.length > 0 &&
+          <button onClick={() => finishOrder()}>Finalizar compra</button>
+        }
       </div>
       {(isUserLogged || token.get()) && (
         <>
           <div className="past-orders-container">
-            <h2>Compras passadas</h2>
+            <h1 className='title'>Compras passadas</h1>
             {loadingOrders
               ? (
                 <>
@@ -251,7 +279,7 @@ const PurchaseItem: React.FC<{ purchaseItem: OrderItem }> = ({ purchaseItem }) =
       <div className="flex">
         <img width="50px" height="50px" src={purchaseItem.product.picture} alt={purchaseItem.product.name} />
         <span className="ml-2 text-left">
-          <p className="flex">{purchaseItem.product.name}</p>
+          <p className="flex">{purchaseItem.product.name} - {purchaseItem.amount}X</p>
         </span>
       </div>
       <div style={{ marginBottom: "10px" }}></div>

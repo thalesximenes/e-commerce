@@ -174,6 +174,15 @@ export const listOrdersService = (accessToken: string) => {
   return api.get('purchase', config).then((res: Temp) => res.data)
 }
 
+export const listAdminOrdersService = (accessToken: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }
+  return api.get('purchase/admin', config).then((res: Temp) => res.data)
+}
+
 export const addOrderService = (payload: ICreateOrder, accessToken: string) => {
   const config = {
     headers: {

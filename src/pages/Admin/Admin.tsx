@@ -188,6 +188,7 @@ const Admin: React.FC = () => {
         {isUserLogged && <h3>Olá, {loggedUrer?.name}</h3>}
         <ul className="md-5">
           {isUserLogged && <li onClick={() => navigate('/')}>Início</li>}
+          {isUserLogged && <li onClick={() => navigate('/pedidos')}>Pedidos</li>}
           {isUserLogged && (
             <li onClick={() => navigate('/profile')}>Sua conta</li>
           )}

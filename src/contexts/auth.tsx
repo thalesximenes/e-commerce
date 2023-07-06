@@ -79,9 +79,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const dispatchLogout = useCallback(async () => {
     try {
-      await signOutService(tokens.refreshToken, tokens.accessToken)
       persistUser().destroy()
       persistToken().destroy()
+      await signOutService(tokens.refreshToken, tokens.accessToken)
+      
     } catch {
       console.log('error')
     } finally {

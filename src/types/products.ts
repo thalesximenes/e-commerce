@@ -9,6 +9,7 @@ export interface IProduct {
   stock: string | number
   categories: any[] | undefined
   description: string | undefined
+  amount: number
 }
 
 export interface ICategory {

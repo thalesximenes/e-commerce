@@ -4,6 +4,7 @@ import Register from '../pages/Register'
 import Login from '../pages/Login'
 import Admin from '../pages/Admin/Admin'
 import Profile from '../pages/Profile'
+import Pedidos from '../pages/Pedidos'
 import { AuthProvider } from '../contexts/auth'
 import PrivateRoute from './private.routes'
 import { ProductsProvider } from '../contexts/products'
@@ -19,6 +20,7 @@ export const Router = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Home />} />
+              <Route path="/pedidos" element={<Pedidos />} />
               <Route
                 path="/adm"
                 element={
